@@ -1,0 +1,196 @@
+/* 1. 全局变量 + 禁止滚动/隐藏白边 */
+html, body {
+    --mobile-padding: 1%;
+    --pc-padding: 3% 4%;
+    --pc-max-size: 55%;
+    --mobile-hit-right: 15%;
+    --mobile-hit-bottom: 16%;
+    --pc-hit-right: 40%;
+    --pc-hit-bottom: 10%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+/* 2. 通用图层样式 */
+.layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    pointer-events: none;
+}
+
+/* 3. 图层布局 */
+.background-layer {
+    z-index: 1;
+    background-image: url('./image/background.png');
+    background-size: cover;
+}
+.leftcat-layer {
+    z-index: 2;
+    background-image: url('./image/leftcat.png');
+}
+.rightcat-layer {
+    z-index: 2;
+    background-image: url('./image/rightcat.png');
+}
+.star-layer {
+    z-index: 2;
+    background-image: url('./image/star.png');
+}
+.wamao-layer {
+    z-index: 5;
+    background-image: url('./image/wamao1.png');
+    top: 56%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: wamaoShake 5s infinite alternate ease-in-out;
+}
+
+/* 4. 加载容器：无框化 + 顶部定位 */
+.loading-container {
+    position: absolute;
+    z-index: 10;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    text-align: center;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+/* 加载旋转动画 */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #8B4513;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+    animation: spin 1s linear infinite;
+}
+
+/* 加载文字 */
+.loading-text {
+    color: #4a3b2a;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* 进度条容器：无框化 */
+.loading-progress {
+    width: 100%;
+    height: 8px;
+    background-color: transparent;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: none;
+}
+
+/* 进度条：渐变+光效 */
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #8B4513 0%, #a0522d 100%);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: progressLight 1.5s infinite linear;
+}
+
+/* 5. 移动端适配：仅背景图全屏，猫保留原尺寸 */
+@media screen and (max-width: 1023px) {
+    /* 仅背景图全屏拉伸 */
+    .background-layer {
+        background-size: 100% 100%;
+        background-position: 0 0;
+        width: 100vw;
+        height: 100vh;
+    }
+    /* 猫/瓦猫/星星保留原尺寸，不缩放 */
+    .leftcat-layer, .rightcat-layer, .star-layer, .wamao-layer {
+        background-size: contain; /* 核心：不拉伸，保留图片原始尺寸 */
+        background-position: center center; /* 居中显示 */
+        width: 100%;
+        height: 100%;
+    }
+    .loading-container {
+        top: 3%;
+        width: 90%;
+    }
+    .loading-spinner {
+        width: 35px;
+        height: 35px;
+    }
+    .loading-text {
+        font-size: calc(2vw + 0.4rem);
+    }
+    .loading-progress {
+        height: 6px;
+    }
+}
+
+/* 6. PC端适配：背景图居中 + 加载条严格在背景图内 */
+@media screen and (min-width: 1024px) {
+    .background-layer {
+        background-size: contain;
+        background-position: center center;
+        width: 100%;
+        height: 100%;
+    }
+    .leftcat-layer, .rightcat-layer, .star-layer, .wamao-layer {
+        background-size: contain;
+        background-position: center center;
+    }
+    .loading-container {
+        top: 8%;
+        width: 70%; 
+        max-width: 900px;
+    }
+    .loading-text {
+        font-size: 1.1rem;
+    }
+    .loading-progress {
+        height: 10px;
+        width: 75%;
+        margin: 0 auto;
+    }
+}
+
+/* 动画 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes progressLight {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+@keyframes wamaoShake {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    50% { transform: translate(-50%, -50%) rotate(2deg); }
+    100% { transform: translate(-50%, -50%) rotate(2deg); }
+}
